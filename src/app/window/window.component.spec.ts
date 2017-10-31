@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ScatterPlotMatrixComponent } from './scatter-plot-matrix.component';
+import { WindowComponent } from './window.component';
 
-describe('ScatterPlotMatrixComponent', () => {
-  let component: ScatterPlotMatrixComponent;
-  let fixture: ComponentFixture<ScatterPlotMatrixComponent>;
+describe('WindowComponent', () => {
+  let component: WindowComponent;
+  let fixture: ComponentFixture<WindowComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ScatterPlotMatrixComponent ]
+      declarations: [ WindowComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ScatterPlotMatrixComponent);
+    fixture = TestBed.createComponent(WindowComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

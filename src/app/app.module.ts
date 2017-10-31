@@ -3,13 +3,13 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { ScatterPlotMatrixComponent } from './d3/scatter-plot-matrix/scatter-plot-matrix.component';
+import { WindowComponent } from './window/window.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    ScatterPlotMatrixComponent
+    WindowComponent
   ],
   imports: [
     BrowserModule
