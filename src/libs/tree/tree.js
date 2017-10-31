@@ -1,3 +1,12 @@
+"use strict";
+class Tree {
+    test(msg) {
+        console.log(msg);
+    }
+}
+
+exports.default = Tree;
+
 /*    function Node(data) {
         this.data       = data;
         this.parent     = null;
