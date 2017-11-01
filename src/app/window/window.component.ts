@@ -1,6 +1,7 @@
+/*
+/// <reference path="./../../libs/tree/tree.d.ts" />*/
 import { Component, OnInit } from '@angular/core';
-/// <reference path="./../../libs/tree/tree.d.ts" />
-import Tree from './../../libs/tree/tree';
+
 
 @Component({
   selector: 'app-window',
@@ -16,10 +17,11 @@ export class WindowComponent implements OnInit {
   HEIGHT_ICON = 28;
   WIDTH_ICON = 28;
   window: HTMLElement;
+  tree: any;
 
   constructor() { 
-    const tree = new Tree();
-    tree.test("HUEHUEHUEHUEHUE");
+    //tree = Tree.Tree("painel-1");
+    //tree.createTree();
   }
 
   ngOnInit() {
@@ -27,3 +29,4 @@ export class WindowComponent implements OnInit {
   }
 
 }
+

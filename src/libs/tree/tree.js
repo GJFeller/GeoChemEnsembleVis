@@ -1,13 +1,30 @@
-"use strict";
-class Tree {
-    test(msg) {
-        console.log(msg);
+/*"use strict";
+
+var TreeNode = function (data) {
+    var data = data;
+    var parent = null;
+    var children = [];
+    var depth = 1;
+    var id = 1;
+    var chart = null;
+
+    this.printThis = function () {
+        console.log(data + "-" + parent + "="
+                    + children + "-" + depth + "-" + id);
     }
 }
 
-exports.default = Tree;
+var Tree = function (data) {
+    var _root = TreeNode(data);
 
-/*    function Node(data) {
+    this.test = function(msg) {
+        console.log(msg);
+    };
+};
+
+module.exports = { Tree, TreeNode };*/
+
+    function TreeNode(data) {
         this.data       = data;
         this.parent     = null;
         this.children   = [];
@@ -17,7 +34,7 @@ exports.default = Tree;
     }
 
     function Tree(data) {
-        this._root = new Node(data);
+        this._root = new TreeNode(data);
     }
 
     Tree.prototype.traverseDF = function(callback) {
@@ -88,7 +105,7 @@ exports.default = Tree;
     };
 
     Tree.prototype.add = function(data, toData, traversal) {
-        var child = new Node(data),
+        var child = new TreeNode(data),
             parent = null,
             id  = 0;
         var callback = function (node) {
@@ -188,4 +205,6 @@ exports.default = Tree;
 
             return deletedData;
         }
-    };*/
+    };
+
+module.exports = Tree;
