@@ -46,15 +46,17 @@ export class WindowComponent implements OnInit {
 
     let workspace = $('#workspace');
 
-    let win: any = $('#' + id);
-    console.log(win);
-    win.draggable({
+    console.log(id);
+    //let win: any = $('#' + id);
+    //console.log(win);
+    (<any>$('#' + id)).draggable({
       handle: '.panel-heading',
       stack: '.panel, .fa-window-maximize',
       containment: [10, 10, workspace.width() - this.INITIAL_WIDTH - 10 ,
         workspace.height() - this.INITIAL_HEIGHT - 70],
       drag: function(){
-          this.centerLine(this.id);
+        console.log(id);
+          this.centerLine(id);
       },
       cancel: '.dropdown-menu'
     })
