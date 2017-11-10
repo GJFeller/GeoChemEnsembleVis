@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { WindowsSystemModule } from './windows-system/windows-system.module';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
@@ -7,16 +8,17 @@ import { WindowComponent } from './window/window.component';
 //import * as $ from 'jquery';
 import 'jquery';
 import 'jqueryui';
+//import { WindowsSystemComponent, WindowModule } from './windows-system/windows-system.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
-    WindowComponent
+    HeaderComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    WindowsSystemModule
   ],
   providers: [],
   bootstrap: [AppComponent]

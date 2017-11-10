@@ -125,8 +125,8 @@ class Tree {
         let parent: Node = null;
         let id: number = 0;
         let callback = function (node: Node) {
-            if (node.data === data) {
-                parent = node.parent;
+            if (node.data === toData) {
+                parent = node;
             }
         };
 
@@ -137,7 +137,7 @@ class Tree {
                 this.idArray.push(1);
                 id = 1;
             } else {
-                id = this.idArray[parent.depth];
+                id = this.idArray[parent.depth] + 1;
                 this.idArray[parent.depth] += 1;
             }
 

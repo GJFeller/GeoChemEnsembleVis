@@ -1,7 +1,8 @@
 /*
 /// <reference path="./../../libs/tree/tree.d.ts" />*/
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Tree } from '../../libs/tree/tree';
+import { WindowService } from '../window.service';
 
 //declare var $: any;
 //declare var jQuery:any;
@@ -11,146 +12,75 @@ import { Tree } from '../../libs/tree/tree';
   templateUrl: './window.component.html',
   styleUrls: ['./window.component.css']
 })
-export class WindowComponent implements OnInit {
+export class WindowComponent implements AfterViewInit {
 
-  INITIAL_HEIGHT = 250;
+  INITIAL_HEIGHT = 100;
   INITIAL_WIDTH = 350;
   MAX_HEIGHT = 620;
   MAX_WIDTH = 1000;
   HEIGHT_ICON = 28;
   WIDTH_ICON = 28;
-  elem: ElementRef;
-  window: HTMLElement;
-  tree: Tree;
-  panelList: Array<Object> = [];
+  elementRef: ElementRef;
+  title: string = 'Novo Painel';
+  _isRoot = false;
+  id: string;
 
-  constructor(elementRef: ElementRef) { 
-    console.log(elementRef);
-    this.elem = elementRef;
-    //tree.createTree();
+  constructor(private windowService: WindowService) {
+    
   }
 
-  ngOnInit() {
-    this.tree = new Tree('painel-1-1');
-    this.panelList.push({id: 'painel-1-1', title: 'Teste'});
-    //this.window = this.elem.nativeElement;
-    this.setUpPanel('painel-1-1');
-    //console.log(this.window);
-  }
-
-  setUpPanel(id: string): void {
-    /*$('#' + id + ' .btn-default.btn-minimize')
+  ngAfterViewInit() {
+    let workspace = $('#workspace');
+    workspace.height(window.innerHeight);
+    console.log(workspace);
+    $('#' + this.id + ' .btn-default.btn-minimize')
     .mouseenter(function () {
       $(this).css('background', '#e6e6e6');
     })
     .mouseleave(function () {
       $(this).css('background', '#fff');
-    });*/
-
-    let workspace = $('#workspace');
-
-    console.log(id);
-    console.log($('#' + id));
-    let win = $('#' + id);
-    //win.draggable();
-    win.draggable();
-    console.log($('#' + id).html());
-    /*let win = jQuery(this.elem.nativeElement).find('#' + id).draggable({
+    });
+    let win = $('#' + this.id).draggable({
       handle: '.panel-heading',
       stack: '.panel, .fa-window-maximize',
       containment: [10, 10, workspace.width() - this.INITIAL_WIDTH - 10 ,
-        workspace.height() - this.INITIAL_HEIGHT - 70],
+        workspace.height() - this.INITIAL_HEIGHT - 90],
       drag: function(){
-        console.log(id);
-          this.centerLine(id);
+        console.log(this.id);
+          //this.centerLine(this.id);
       },
       cancel: '.dropdown-menu'
     });
-    console.log(win);*/
-    //$('#' + id).draggable();
-    /*$('#' + id).draggable({
-      handle: '.panel-heading',
-      stack: '.panel, .fa-window-maximize',
-      containment: [10, 10, workspace.width() - this.INITIAL_WIDTH - 10 ,
-        workspace.height() - this.INITIAL_HEIGHT - 70],
-      drag: function(){
-        console.log(id);
-          this.centerLine(id);
-      },
-      cancel: '.dropdown-menu'
-    })*/
-    /*$('#' + id).draggable({
-      handle: '.panel-heading',
-      stack: '.panel, .fa-window-maximize',
-      containment: [10, 10, workspace.width() - this.INITIAL_WIDTH - 10 ,
-        workspace.height() - this.INITIAL_HEIGHT - 70],
-      drag: function(){
-        console.log(id);
-          this.centerLine(id);
-      },
-      cancel: '.dropdown-menu'
-    })
-    .find('.panel-body')
-    .css({
-      height: this.INITIAL_HEIGHT,
-      width: this.INITIAL_WIDTH
-    })
-    .resizable({
-      resize: function(){
-        let aPanel = $(this).parents('.panel')[0];
-        this.centerLine(aPanel.id);
-      },
-      aspectRatio: true,
-      maxHeight: this.MAX_HEIGHT,
-      maxWidth: this.MAX_WIDTH,
-      minHeight: this.INITIAL_HEIGHT,
-      minWidth: this.INITIAL_WIDTH
-    });*/
+    console.log(win);
 
-    
   }
 
-  centerLine(panelID: string, icon: any): void {
-    if (typeof icon === 'undefined') { icon = false; }
-    let lines = d3.selectAll('line').filter('.class-' + panelID);
-    let sizeLines = lines.size();
-
-    for (let _i = 0; _i < sizeLines; _i++) {
-      let aLine = $('#' + lines[0][_i].id);
-      let lineID = lines[0][_i].id.split('_');
-      if (lineID[0] === panelID) {
-        if (!icon) {
-          aLine.attr('x1', this.getCenter(lineID[0])['x']);
-          aLine.attr('y1', this.getCenter(lineID[0])['y']);
-        } else {
-          aLine.attr('x1', parseInt(this.getCenter('icon-' + lineID[0])['x']));
-          aLine.attr('y1', parseInt(this.getCenter('icon-' + lineID[0])['y']));
-        }
-      } else {
-        if (!icon) {
-          aLine.attr('x2', this.getCenter(lineID[0])['x']);
-          aLine.attr('y2', this.getCenter(lineID[0])['y']);
-        } else {
-          aLine.attr('x2', parseInt(this.getCenter('icon-' + lineID[0])['x']));
-          aLine.attr('y2', parseInt(this.getCenter('icon-' + lineID[0])['y']));
-        }
-      }
-
-    }
+  getId() {
+    return this.id;
   }
 
-  getCenter(obj: any) {
-    let $this = $('#' + obj);
-    let offset = $this.offset();
-    let width = $this.width();
-    let height = $this.height();
-    let getSvg = $('#workspace');
-    let centerX = offset.left + width / 2 -  getSvg.offset().left;
-    let centerY = offset.top + height / 2 - getSvg.offset().top;
-    let arr = [];
-    arr['x'] = centerX;
-    arr['y'] = centerY;
-    return arr;
+  setId(id: string) {
+    this.id = id;
+  }
+
+  setIsRoot(isRoot: boolean) {
+    this._isRoot = isRoot;
+  }
+
+  isRoot(): boolean {
+    return this._isRoot;
+  }
+
+  getTitle(): string {
+    return this.title;
+  }
+
+  setTitle(title: string): void {
+    this.title = title;
+  }
+
+  private getAnswer() {
+    return this.windowService.giveMeTheAnswer();
   }
 
 }
