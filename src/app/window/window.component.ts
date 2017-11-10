@@ -3,6 +3,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Tree } from '../../libs/tree/tree';
 
+//declare var $: any;
+//declare var jQuery:any;
 
 @Component({
   selector: 'app-window',
@@ -17,13 +19,14 @@ export class WindowComponent implements OnInit {
   MAX_WIDTH = 1000;
   HEIGHT_ICON = 28;
   WIDTH_ICON = 28;
-  @ViewChild('panelcont')
-  private elem: ElementRef;
+  elem: ElementRef;
   window: HTMLElement;
   tree: Tree;
   panelList: Array<Object> = [];
 
-  constructor() { 
+  constructor(elementRef: ElementRef) { 
+    console.log(elementRef);
+    this.elem = elementRef;
     //tree.createTree();
   }
 
@@ -36,20 +39,47 @@ export class WindowComponent implements OnInit {
   }
 
   setUpPanel(id: string): void {
-    $('#' + id + ' .btn-default.btn-minimize')
+    /*$('#' + id + ' .btn-default.btn-minimize')
     .mouseenter(function () {
       $(this).css('background', '#e6e6e6');
     })
     .mouseleave(function () {
       $(this).css('background', '#fff');
-    });
+    });*/
 
     let workspace = $('#workspace');
 
     console.log(id);
-    //let win: any = $('#' + id);
-    //console.log(win);
-    (<any>$('#' + id)).draggable({
+    console.log($('#' + id));
+    let win = $('#' + id);
+    //win.draggable();
+    win.draggable();
+    console.log($('#' + id).html());
+    /*let win = jQuery(this.elem.nativeElement).find('#' + id).draggable({
+      handle: '.panel-heading',
+      stack: '.panel, .fa-window-maximize',
+      containment: [10, 10, workspace.width() - this.INITIAL_WIDTH - 10 ,
+        workspace.height() - this.INITIAL_HEIGHT - 70],
+      drag: function(){
+        console.log(id);
+          this.centerLine(id);
+      },
+      cancel: '.dropdown-menu'
+    });
+    console.log(win);*/
+    //$('#' + id).draggable();
+    /*$('#' + id).draggable({
+      handle: '.panel-heading',
+      stack: '.panel, .fa-window-maximize',
+      containment: [10, 10, workspace.width() - this.INITIAL_WIDTH - 10 ,
+        workspace.height() - this.INITIAL_HEIGHT - 70],
+      drag: function(){
+        console.log(id);
+          this.centerLine(id);
+      },
+      cancel: '.dropdown-menu'
+    })*/
+    /*$('#' + id).draggable({
       handle: '.panel-heading',
       stack: '.panel, .fa-window-maximize',
       containment: [10, 10, workspace.width() - this.INITIAL_WIDTH - 10 ,
@@ -75,7 +105,7 @@ export class WindowComponent implements OnInit {
       maxWidth: this.MAX_WIDTH,
       minHeight: this.INITIAL_HEIGHT,
       minWidth: this.INITIAL_WIDTH
-    });
+    });*/
 
     
   }
