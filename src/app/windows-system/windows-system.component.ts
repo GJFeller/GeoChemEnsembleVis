@@ -3,7 +3,7 @@ import { Component, OnInit, ComponentFactoryResolver, ViewContainerRef } from '@
 import { WindowComponent } from '../window/window.component';
 
 import { Tree } from '../../libs/tree/tree';
-import * as d3 from 'd3';
+
 
 @Component({
   selector: 'app-windows-system',
@@ -50,27 +50,14 @@ export class WindowsSystemComponent implements OnInit {
       }
     });
     if (parentComponent != null) {
-      this.drawLine(parentComponent, window);
+      window.setParentComponent(parentComponent);
+      //this.drawLine(parentComponent, window);
     }
     this.windowList.push(window);
     //ref.changeDetectorRef.detectChanges();
     //console.log(ref.instance.getId());
   }
 
-  drawLine(component1: WindowComponent, component2: WindowComponent) {
-    const svg = d3.select('#workspace');
-    console.log(svg);
-
-    const centerX = component1.getCenter();
-    const centerY = component2.getCenter();
-    const line = svg.append('line')
-            .style('stroke', 'black')
-            .attr('id', component1.getId() + '_'+ component2.getId()) //ex: id = "panel-1-1_panel-2-1"
-            .attr('class', 'class-' + component1.getId() + ' class-' + component2.getId()) //ex: class="panel-1-1 panel-2-1"
-            .attr('x1', centerX['x'])
-            .attr('y1', centerX['y'])
-            .attr('x2', centerY['x'])
-            .attr('y2', centerY['y']);
-  }
+  
 
 }

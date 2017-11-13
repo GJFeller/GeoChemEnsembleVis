@@ -3,6 +3,7 @@
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { Tree } from '../../libs/tree/tree';
 import { WindowService } from '../window.service';
+import * as d3 from 'd3';
 
 //declare var $: any;
 //declare var jQuery:any;
@@ -25,13 +26,74 @@ export class WindowComponent implements AfterViewInit {
   _isRoot = false;
   id: string;
   parentId: string = null;
+  parentComponent: WindowComponent = null;
+  childrenComponent: Array<WindowComponent> = [];
 
-  constructor(private windowService: WindowService) {
-    
+  static getCenter(obj: any) {
+    const $this = $('#' + obj);
+    const offset = $this.offset();
+    const width = $this.width();
+    const height = $this.height();
+    const getSvg = $('#workspace');
+    const centerX = offset.left + width / 2 -  getSvg.offset().left;
+    const centerY = offset.top + height / 2 - getSvg.offset().top;
+    let arr = [];
+    arr['x'] = centerX;
+    arr['y'] = centerY;
+    return arr;
   }
+
+  static drawLine(component1: WindowComponent, component2: WindowComponent) {
+    const svg = d3.select('#workspace');
+    console.log(svg);
+
+    const centerX = component1.getCenter();
+    const centerY = component2.getCenter();
+    const line = svg.append('line')
+            .style('stroke', 'black')
+            .attr('id', component1.getId() + '_' + component2.getId()) // ex: id = "panel-1-1_panel-2-1"
+            .attr('class', 'class-' + component1.getId() + ' class-' + component2.getId()) // ex: class="panel-1-1 panel-2-1"
+            .attr('x1', centerX['x'])
+            .attr('y1', centerX['y'])
+            .attr('x2', centerY['x'])
+            .attr('y2', centerY['y']);
+  }
+
+  static centerLine(component: WindowComponent, icon: any): void {
+    const panelID = component.getId();
+    if (typeof icon === 'undefined') { icon = false; }
+    let lines = d3.selectAll('line').filter('.class-' + panelID);
+    let sizeLines = lines.size();
+
+    for (let _i = 0; _i < sizeLines; _i++) {
+      let aLine = $('#' + lines['_groups'][0][_i].id);
+      let lineID = lines['_groups'][0][_i].id.split('_');
+      if (lineID[0] === panelID) {
+        if (!icon) {
+          aLine.attr('x1', component.getCenter()['x']);
+          aLine.attr('y1', component.getCenter()['y']);
+        } else {
+          aLine.attr('x1', parseInt(WindowComponent.getCenter('icon-' + lineID[0])['x']));
+          aLine.attr('y1', parseInt(WindowComponent.getCenter('icon-' + lineID[0])['y']));
+        }
+      } else {
+        if (!icon) {
+          aLine.attr('x2', component.getCenter()['x']);
+          aLine.attr('y2', component.getCenter()['y']);
+        } else {
+          aLine.attr('x2', parseInt(WindowComponent.getCenter('icon-' + lineID[0])['x']));
+          aLine.attr('y2', parseInt(WindowComponent.getCenter('icon-' + lineID[0])['y']));
+        }
+      }
+
+    }
+}
+
+  constructor(private windowService: WindowService) { }
 
   ngAfterViewInit() {
     let workspace = $('#workspace');
+    const $this = this;
     workspace.height(window.innerHeight);
     //console.log(workspace);
     $('#' + this.id + ' .btn-default.btn-minimize')
@@ -48,7 +110,7 @@ export class WindowComponent implements AfterViewInit {
         workspace.height() - this.INITIAL_HEIGHT - 90],
       drag: function(){
         //console.log(this.id);
-          //this.centerLine(this.id);
+        WindowComponent.centerLine($this, null);
       },
       cancel: '.dropdown-menu'
     });
@@ -69,7 +131,10 @@ export class WindowComponent implements AfterViewInit {
       minHeight: this.INITIAL_HEIGHT,
       minWidth: this.INITIAL_WIDTH
     });
-    console.log(win);
+    console.log(win); 
+    if (this.parentComponent != null) {
+      WindowComponent.drawLine(this.parentComponent, this);
+    }
 
   }
 
@@ -105,17 +170,35 @@ export class WindowComponent implements AfterViewInit {
     return this.parentId;
   }
 
+  setParentComponent(parentComponent: WindowComponent) {
+    this.parentComponent = parentComponent;
+  }
+
+  getParentComponent() {
+    return this.parentComponent;
+  }
+
+  addChildComponent(component: WindowComponent) {
+    this.childrenComponent.push(component);
+  }
+
+  removeChildComponent(component: WindowComponent) {
+    let idx = this.childrenComponent.indexOf(component, 0);
+    if (idx > -1) {
+      this.childrenComponent.splice(idx, 1);
+    }
+  }
+
   getCenter() {
     //console.log(this.elementRef);
     //let $this = this.elementRef.nativeElement.offset();
-    let $this = $('#' + this.id);
-    
-    let offset = $this.offset();
-    let width = $this.width();
-    let height = $this.height();
-    let getSvg = $('#workspace');
-    let centerX = offset.left + width / 2 -  getSvg.offset().left;
-    let centerY = offset.top + height / 2 - getSvg.offset().top;
+    const $this = $('#' + this.id);
+    const offset = $this.offset();
+    const width = $this.width();
+    const height = $this.height();
+    const getSvg = $('#workspace');
+    const centerX = offset.left + width / 2 -  getSvg.offset().left;
+    const centerY = offset.top + height / 2 - getSvg.offset().top;
     let arr = [];
     arr['x'] = centerX;
     arr['y'] = centerY;
