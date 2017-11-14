@@ -121,9 +121,9 @@ export class WindowComponent implements AfterViewInit {
     })
     .resizable({
       resize: function(){
-        let aPanel = $(this).parents('.panel')[0];
-        console.log(aPanel);
-        //this.centerLine(aPanel.id);
+        //let aPanel = $(this).parents('.panel')[0];
+        //console.log(aPanel);
+        WindowComponent.centerLine($this, null);
       },
       aspectRatio: true,
       maxHeight: this.MAX_HEIGHT,
