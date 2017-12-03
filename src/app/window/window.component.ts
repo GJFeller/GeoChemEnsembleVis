@@ -21,26 +21,38 @@ export class WindowComponent implements AfterViewInit {
   MAX_WIDTH = 1000;
   HEIGHT_ICON = 28;
   WIDTH_ICON = 28;
-  elementRef: ElementRef;
-  title: string = 'Novo Painel';
+  title = 'Novo Painel';
   _isRoot = false;
   id: string;
   parentId: string = null;
   parentComponent: WindowComponent = null;
   childrenComponent: Array<WindowComponent> = [];
 
-  static getCenter(obj: any) {
+  static getCenter(obj: string) {
     const $this = $('#' + obj);
-    const offset = $this.offset();
-    const width = $this.width();
-    const height = $this.height();
-    const getSvg = $('#workspace');
-    const centerX = offset.left + width / 2 -  getSvg.offset().left;
-    const centerY = offset.top + height / 2 - getSvg.offset().top;
-    let arr = [];
-    arr['x'] = centerX;
-    arr['y'] = centerY;
-    return arr;
+    console.log($this);
+    if (typeof $this !== 'undefined') {
+      const offset = $this.offset();
+      const width = $this.width();
+      const height = $this.height();
+      const getSvg = $('#workspace');
+      const centerX = offset.left + width / 2 -  getSvg.offset().left;
+      const centerY = offset.top + height / 2 - getSvg.offset().top;
+      let arr = [];
+      arr['x'] = centerX;
+      arr['y'] = centerY;
+      return arr;
+    }
+    // tslint:disable-next-line:one-line
+    else {
+      const body = document.getElementsByTagName('body')[0];
+      const centerX = body.offsetLeft + body.offsetWidth / 2;
+      const centerY = body.offsetTop + body.offsetHeight / 2;
+      let arr = [];
+      arr['x'] = centerX;
+      arr['y'] = centerY;
+      return arr;
+    }
   }
 
   static drawLine(component1: WindowComponent, component2: WindowComponent) {
@@ -87,9 +99,44 @@ export class WindowComponent implements AfterViewInit {
       }
 
     }
-}
+  }
 
-  constructor(private windowService: WindowService) { }
+  static createNewIcon(component: WindowComponent): void {
+    let panelCenter = WindowComponent.getCenter(component.getId());
+
+    let workspace = $('#workspace');
+
+    $('.container').append(
+      '<i id= "icon-' + component.getId() + '" class="fa fa-window-maximize fa-2x"></i>'
+    );
+
+    $('#icon-' + component.getId())
+    .draggable({
+        stack: '.panel, .fa-window-maximize',
+        containment: [10, 10, workspace.width() - component.WIDTH_ICON - 10 , workspace.height() - component.HEIGHT_ICON - 10],
+        drag: function(){
+          WindowComponent.centerLine(component, true);
+        },
+        stop: function(){
+          WindowComponent.centerLine(component, true);
+        }
+    })
+    .css({
+        'left' :  panelCenter['x'],
+        'top'  :  panelCenter['y']
+    });
+
+    /* Makes all the lines that are connected to a icon to become dotted */
+    d3.selectAll('line').filter('.class-' + component.getId()).style('stroke-dasharray', ('3, 3'));
+  }
+
+  static minimizeWindow(component: WindowComponent): void {
+    WindowComponent.createNewIcon(component);
+    WindowComponent.centerLine(component, true);
+    $('#' + component.getId()).hide();
+  }
+
+  constructor(private windowService: WindowService, private elementRef: ElementRef) { }
 
   ngAfterViewInit() {
     let workspace = $('#workspace');
@@ -102,7 +149,8 @@ export class WindowComponent implements AfterViewInit {
     })
     .mouseleave(function () {
       $(this).css('background', '#fff');
-    });
+    })
+    .click((e) => { WindowComponent.minimizeWindow(this); });
     let win = $('#' + this.id).draggable({
       handle: '.panel-heading',
       stack: '.panel, .fa-window-maximize',
@@ -131,7 +179,8 @@ export class WindowComponent implements AfterViewInit {
       minHeight: this.INITIAL_HEIGHT,
       minWidth: this.INITIAL_WIDTH
     });
-    console.log(win); 
+    //win.click('.btn-minimize', WindowComponent.minimizeWindow(this));
+    console.log(win);
     if (this.parentComponent != null) {
       WindowComponent.drawLine(this.parentComponent, this);
     }
@@ -191,18 +240,32 @@ export class WindowComponent implements AfterViewInit {
 
   getCenter() {
     //console.log(this.elementRef);
-    //let $this = this.elementRef.nativeElement.offset();
+    //const $this = this.elementRef.nativeElement;
+    //console.log(this.elementRef);
     const $this = $('#' + this.id);
-    const offset = $this.offset();
-    const width = $this.width();
-    const height = $this.height();
-    const getSvg = $('#workspace');
-    const centerX = offset.left + width / 2 -  getSvg.offset().left;
-    const centerY = offset.top + height / 2 - getSvg.offset().top;
-    let arr = [];
-    arr['x'] = centerX;
-    arr['y'] = centerY;
-    return arr;
+    console.log($this);
+    if (typeof $this !== 'undefined') {
+      const offset = $this.offset();
+      const width = $this.width();
+      const height = $this.height();
+      const getSvg = $('#workspace');
+      const centerX = offset.left + width / 2 -  getSvg.offset().left;
+      const centerY = offset.top + height / 2 - getSvg.offset().top;
+      let arr = [];
+      arr['x'] = centerX;
+      arr['y'] = centerY;
+      return arr;
+    }
+    // tslint:disable-next-line:one-line
+    else {
+      const body = document.getElementsByTagName('body')[0];
+      const centerX = body.offsetLeft + body.offsetWidth / 2;
+      const centerY = body.offsetTop + body.offsetHeight / 2;
+      let arr = [];
+      arr['x'] = centerX;
+      arr['y'] = centerY;
+      return arr;
+    }
   }
 
   private getAnswer() {
